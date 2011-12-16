@@ -7,7 +7,7 @@ Templates allow you to manage the content of template files, for example
 configuration files that cannot yet be managed as a Puppet type. Learn more at
 http://projects.puppetlabs.com/projects/puppet/wiki/Puppet_Templating
 
-You can use templates like this: 
+You can use templates like this:
 
     class myclass {
       package { mypackage: ensure => latest }
