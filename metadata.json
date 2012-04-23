@@ -1,0 +1,20 @@
+{
+  "name": "do-duplicity",
+  "author": "do",
+  "description": "",
+  "license": "GPL",
+  "project_page": "",
+  "source": "",
+  "summary": "",
+  "version": "0.0.1",
+  "checksums": {
+    "Modulefile": "37087a8b2dc893b2d9651d79d9b7fd11",
+    "README": "c3b4b2ad13f01d7fb561809375d2c7c1",
+    "manifests/init.pp": "6694bb820b70e6a846becee2ee61917a",
+    "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "spec/spec_helper.rb": "ca19ec4f451ebc7fdb035b52eae6e909",
+    "templates/conf.erb": "879adad8222bcd455f28209d5dbf2b41",
+    "tests/init.pp": "d54da2e6aec21a5973cd18703abe5647"
+  },
+  "dependencies": []
+}
