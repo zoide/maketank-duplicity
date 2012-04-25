@@ -11,5 +11,5 @@ touch $LOCKFILE
 /usr/bin/duply $BCKPNAME $ACTION >>/var/log/backup/backup-${BCKPNAME}.log 2>>/var/log/backup/backup-${BCKPNAME}_error.log
 if [ $? -eq 0 ]; then
     touch $STATFILE
-else
+fi
 rm $LOCKFILE
