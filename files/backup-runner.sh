@@ -2,7 +2,7 @@
 ## actually run duply
 BCKPNAME="$1"
 LOCKFILE="/tmp/lock-${BCKPNAME}"
-STATFILE="/var/log/.success-${BCKPNAME}"
+STATFILE="/var/log/backup/.success-${BCKPNAME}"
 ACTION="$2"
 
 [[ -e $LOCKFILE ]] && exit 0 #exit if lockfile exists
@@ -12,4 +12,5 @@ touch $LOCKFILE
 if [ $? -eq 0 ]; then
     touch $STATFILE
 fi
-rm $LOCKFILE
+echo -n "## ALL DONE: removing Lockfile: "
+rm -v $LOCKFILE
