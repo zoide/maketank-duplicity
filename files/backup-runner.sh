@@ -1,9 +1,10 @@
 #!/bin/bash
 ## actually run duply
 BCKPNAME="$1"
+shift
 LOCKFILE="/tmp/lock-${BCKPNAME}"
 STATFILE="/var/log/backup/.success-${BCKPNAME}"
-ACTION="$2"
+ACTION="$@"
 
 [[ -e $LOCKFILE ]] && exit 0 #exit if lockfile exists
 touch $LOCKFILE
@@ -12,5 +13,5 @@ touch $LOCKFILE
 if [ $? -eq 0 ]; then
     touch $STATFILE
 fi
-echo -n "## ALL DONE: removing Lockfile: "
+echo -n "## ALL DONE: removing Lockfile: " >>/var/log/backup/backup-${BCKPNAME}.log
 rm -v $LOCKFILE
