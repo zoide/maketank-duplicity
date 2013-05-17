@@ -1,4 +1,4 @@
-define post (
+define duplicity::post (
   $content,
   $backup_name = $::fqdn,
   $confdir     = $duplicity::params::confdir,

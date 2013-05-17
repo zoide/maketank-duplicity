@@ -1,4 +1,4 @@
-define pre (
+define duplicity::pre (
   $content,
   $backup_name = $::fqdn,
   $confdir     = "${duplicity::params::confdir}",

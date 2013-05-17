@@ -1,4 +1,4 @@
-define exclude (
+define duplicity::exclude (
   $content,
   $backup_name = "",
   $confdir     = "${duplicity::params::confdir}",
