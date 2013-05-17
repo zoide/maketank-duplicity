@@ -3,6 +3,8 @@
 #  GPG_KEY='01234567'; GPG_PW='passphrase' - public key encryption
 #  GPG_PW='passphrase' - symmetric encryption using passphrase only
 GPG_PW='<%= gpg_password %>'
+PASSPHRASE='<%= gpg_password %>'
+GPG_KEY='disabled'
 
 # gpg options passed from duplicity to gpg process (default='')
 # e.g. "--trust-model pgp|classic|direct|always" 
