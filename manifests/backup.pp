@@ -6,7 +6,7 @@ define duplicity::backup (
   $gpg_password        = "",
   $target_user         = "",
   $target_password     = "",
-  $gpg_options         = "--compress-algo=bzip2 --bzip2-compress-level=9",
+  $gpg_options         = "--compress-algo=bzip2",
   $max_full_backups    = "1",
   $max_full_backup_age = "2M",
   $max_age             = "1M",
@@ -16,8 +16,12 @@ define duplicity::backup (
   $minute              = "10",
   $cron                = true,
   $ganglia             = true,
-  $confdir             = $duplicity::params::confdir) {
+  $confdir             = false) {
   require 'duplicity::params'
+  $cf_r = $confdir ? {
+    false   => $duplicity::params::confdir,
+    default => $confdir
+  }
 
   if !defined(Class["duplicity"]) {
     class { "duplicity": ensure => $ensure }
@@ -27,18 +31,24 @@ define duplicity::backup (
     default   => "absent",
   }
 
-  file { "${confdir}/${backup_name}":
-    require => File["${confdir}"],
-    ensure  => $dir_ensure,
-    recurse => true,
-    force   => true,
-    mode    => "0700",
-  }
+  file {
+    "${cf_r}/${backup_name}":
+      require => File["${cf_r}"],
+      ensure  => $dir_ensure,
+      recurse => true,
+      force   => true,
+      mode    => "0700";
 
-  file { "${confdir}/${backup_name}/conf":
-    content => template("duplicity/conf.erb"),
-    ensure  => $ensure,
-    require => File["${confdir}/${backup_name}"],
+    "${cf_r}/${backup_name}/conf":
+      content => template("duplicity/conf.erb"),
+      ensure  => $ensure,
+      require => File["${cf_r}/${backup_name}"];
+
+    [
+      "${cf_r}/${backup_name}/${duplicity::params::pred}",
+      "${cf_r}/${backup_name}/${duplicity::params::postd}"]:
+      ensure  => $dir_ensure,
+      require => File["${cf_r}/${backup_name}"],
   }
 
   cron { "duply-run-${backup_name}":
