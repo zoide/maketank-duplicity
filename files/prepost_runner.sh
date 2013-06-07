@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ddir=$(basename $1).d
+ddir=$(basename $0).d
 #Iterate through pre.d and execute em all
 if [ ! -d "${ddir}" ]; then
   echo "${ddir} does not exist" 
