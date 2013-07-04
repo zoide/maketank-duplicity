@@ -13,7 +13,7 @@ touch $LOCKFILE
 [[ -d /var/log/backup ]] || mkdir /var/log/backup
 # HACKING THIS UNTIL DUPLICITY 0.6.20
 # PASSPHRASE
-export PASSPHRASE='<%= gpg_password %>'
+export PASSPHRASE='<%= scope.lookupvar("gpg_password") %>'
 nice ionice -c3 /usr/bin/duply $BCKPNAME $ACTION >>$LOGFILE 2>>$LOGFILE_E
 if [ $? -eq 0 ]; then
     touch $STATFILE

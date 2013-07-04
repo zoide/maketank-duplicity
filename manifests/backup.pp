@@ -16,6 +16,8 @@ define duplicity::backup (
   $minute              = "10",
   $cron                = true,
   $ganglia             = true,
+  $runcondition        = false,
+  $randomsleep         = false,
   $confdir             = false) {
   require 'duplicity::params'
   $cf_r = $confdir ? {
@@ -29,6 +31,17 @@ define duplicity::backup (
   $dir_ensure = $ensure ? {
     "present" => "directory",
     default   => "absent",
+  }
+
+  $rnd_sleep = $randomsleep ? {
+    false   => '',
+    default => "/usr/local/bin/randomsleep.sh ${randomsleep} && ", # mind the
+                                                                   # trailing
+                                                                   # space
+  }
+  $runcond = $runcondition ? {
+    false   => '',
+    default => "test ${runcondition} && ", # mind the trailing space
   }
 
   file {
@@ -52,7 +65,7 @@ define duplicity::backup (
   }
 
   cron { "duply-run-${backup_name}":
-    command => "/usr/local/bin/randomsleep.sh 3600 && /usr/local/sbin/backup-runner.sh ${backup_name} pre_incr_post",
+    command => "${runcond}${rnd_sleep}/usr/local/sbin/backup-runner.sh ${backup_name} pre_incr_post",
     user    => root,
     hour    => "${hour}",
     minute  => "${minute}",
