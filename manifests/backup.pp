@@ -33,6 +33,11 @@ define duplicity::backup (
     default   => "absent",
   }
 
+  File {
+    ensure  => $ensure,
+    require => File["${cf_r}/${backup_name}"],
+  }
+
   file {
     "${cf_r}/${backup_name}":
       require => File["${cf_r}"],
@@ -42,15 +47,15 @@ define duplicity::backup (
       mode    => "0700";
 
     "${cf_r}/${backup_name}/conf":
-      content => template("duplicity/conf.erb"),
-      ensure  => $ensure,
-      require => File["${cf_r}/${backup_name}"];
+      content => template("duplicity/conf.erb");
+
+    "${cf_r}/${backup_name}/runner.params":
+      content => template("duplicity/runner_params.erb");
 
     [
       "${cf_r}/${backup_name}/${duplicity::params::pred}",
       "${cf_r}/${backup_name}/${duplicity::params::postd}"]:
-      ensure  => $dir_ensure,
-      require => File["${cf_r}/${backup_name}"],
+      ensure => $dir_ensure;
   }
 
   cron { "duply-run-${backup_name}":

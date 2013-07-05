@@ -8,24 +8,23 @@ LOGFILE="/var/log/backup/${BCKPNAME}.log"
 LOGFILE_E="/var/log/backup/${BCKPNAME}_error.log"
 ACTION="$@"
 
-<% if $runcondition != false -%>
-#Test our run condition
-[[ test <%= runcondition %> ]] || exit 0
-<% end -%>
+[[ -e /etc/duply/${BCKPNAME}/runner.params ]] && . /etc/duply/${BCKPNAME}/runner.params
+
+if [ ! -n "${RUNCONDITION}" ]; then
+  #Test our run condition
+  [[ $($RUNCONDITION) ]] || exit 0
+fi
 
 [[ -e $LOCKFILE ]] && exit 0 #exit if lockfile exists
 touch $LOCKFILE
 
 [[ -d /var/log/backup ]] || mkdir /var/log/backup
 
-<% if $randomsleep != false -%>
-#We shall sleep
-sleep $(expr $RANDOM % <%= randomsleep %>);
-<% end -%>
+if [ -n "${RANDOMSLEEP}" ]; then
+  #We shall sleep
+  sleep $(expr $RANDOM % $RANDOMSLEEP);
+fi
 
-# HACKING THIS UNTIL DUPLICITY 0.6.20
-# PASSPHRASE
-export PASSPHRASE='<%= scope.lookupvar("gpg_password") %>'
 nice ionice -c3 /usr/bin/duply $BCKPNAME $ACTION >>$LOGFILE 2>>$LOGFILE_E
 if [ $? -eq 0 ]; then
     touch $STATFILE

@@ -1,0 +1,16 @@
+###### PUPPET MANAGED #####
+#
+# Shell snipplet to configure backup-runner.sh
+<% if runcondition != false -%>
+#Test our run condition
+RUNCONDITION='<%= runcondition %>'
+<% end -%>
+<% if randomsleep != false -%>
+#RANDOMSLEEP
+RANDOMSLEEP=<%= randomsleep %>
+<% end -%>
+<% if gpg_password != '' -%>
+# HACKING THIS UNTIL DUPLICITY 0.6.20
+# PASSPHRASE
+export PASSPHRASE="<%= gpg_password %>"
+<% end -%>
