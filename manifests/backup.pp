@@ -33,17 +33,6 @@ define duplicity::backup (
     default   => "absent",
   }
 
-  $rnd_sleep = $randomsleep ? {
-    false   => '',
-    default => "/usr/local/bin/randomsleep.sh ${randomsleep} && ", # mind the
-                                                                   # trailing
-                                                                   # space
-  }
-  $runcond = $runcondition ? {
-    false   => '',
-    default => "test ${runcondition} && ", # mind the trailing space
-  }
-
   file {
     "${cf_r}/${backup_name}":
       require => File["${cf_r}"],
@@ -65,15 +54,15 @@ define duplicity::backup (
   }
 
   cron { "duply-run-${backup_name}":
-    command => "${runcond}${rnd_sleep}/usr/local/sbin/backup-runner.sh ${backup_name} pre_incr_post",
-    user    => root,
-    hour    => "${hour}",
-    minute  => "${minute}",
+    command => "/usr/local/sbin/backup-runner.sh ${backup_name} pre_incr_post",
+    user    => 'root',
+    hour    => $hour,
+    minute  => $minute,
     ensure  => $cron ? {
-      false   => "absent",
+      false   => 'absent',
       default => $ensure,
     },
-    require => File["/usr/local/sbin/backup-runner.sh"],
+    require => File['/usr/local/sbin/backup-runner.sh'],
   }
 
   if defined(Class['ganglia::monitor']) {

@@ -8,9 +8,21 @@ LOGFILE="/var/log/backup/${BCKPNAME}.log"
 LOGFILE_E="/var/log/backup/${BCKPNAME}_error.log"
 ACTION="$@"
 
+<% if $runcondition != false -%>
+#Test our run condition
+[[ test <%= runcondition %> ]] || exit 0
+<% end -%>
+
 [[ -e $LOCKFILE ]] && exit 0 #exit if lockfile exists
 touch $LOCKFILE
+
 [[ -d /var/log/backup ]] || mkdir /var/log/backup
+
+<% if $randomsleep != false -%>
+#We shall sleep
+sleep $(expr $RANDOM % <%= randomsleep %>);
+<% end -%>
+
 # HACKING THIS UNTIL DUPLICITY 0.6.20
 # PASSPHRASE
 export PASSPHRASE='<%= scope.lookupvar("gpg_password") %>'
