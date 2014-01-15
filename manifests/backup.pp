@@ -56,6 +56,20 @@ define duplicity::backup (
       "${cf_r}/${backup_name}/${duplicity::params::pred}",
       "${cf_r}/${backup_name}/${duplicity::params::postd}"]:
       ensure => $dir_ensure;
+
+    "${cf_r}/${backup_name}/pre":
+      ensure  => $ensure,
+      content => "${duplicity::params::prepost_runner} ${cf_r}/${backup_name}/${duplicity::params::pred}",
+      mode    => '0700',
+      owner   => 'root',
+      group   => 'root';
+
+    "${cf_r}/${backup_name}/post":
+      ensure  => $ensure,
+      content => "${duplicity::params::prepost_runner} ${cf_r}/${backup_name}/${duplicity::params::post}",
+      mode    => '0700',
+      owner   => 'root',
+      group   => 'root';
   }
 
   cron { "duply-run-${backup_name}":
@@ -87,7 +101,7 @@ define duplicity::backup (
     icinga::nrpe_service { "${fqdn}_backup_${backup_name}":
       service_description => "backup ${backup_name}",
       command_name        => "check_backup_${backup_name}",
-      command_line        => "/usr/lib/nagios/plugins/check_file_age -f /var/log/backup/.success-${backup_name} -w 72000 -c 172800",
+      command_line        => "/usr/lib/nagios/plugins/check_file_age -f /var/log/backup/.success-${backup_name} -w 36000 -c 39600",
       servicegroups       => "Backup",
       ensure              => $ensure,
     }

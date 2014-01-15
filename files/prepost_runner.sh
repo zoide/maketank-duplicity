@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ddir=$(basename $@).d
+ddir=$1.d
 if [ "${ddir}" != "pre.d" ] || [ "${ddir}" != "post.d" ]; then
     #Iterate through pre.d and execute em all
     if [ ! -d "${ddir}" ]; then
