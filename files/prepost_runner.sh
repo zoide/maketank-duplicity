@@ -1,15 +1,17 @@
 #!/bin/bash
 
-ddir=$(basename $@).d
+ddir=$(basename $@)
+dir=$@
+
 if [ "${ddir}" != "pre.d" ] || [ "${ddir}" != "post.d" ]; then
     #Iterate through pre.d and execute em all
-    if [ ! -d "${ddir}" ]; then
-        echo "${ddir} does not exist" 
+    if [ ! -d "${dir}" ]; then
+        echo "${dir} does not exist" 
         exit 1
     fi
     #check whether we have scripts, otherwise exit gracefuly
-    ls ${ddir}/*.sh 2>/dev/null || exit 0
-    for PROG in ${ddir}/*.sh; do
+    ls ${dir}/*.sh 2>/dev/null || exit 0
+    for PROG in ${dir}/*.sh; do
         echo "Doing: '${PROG}'"
         ${PROG} 
     done

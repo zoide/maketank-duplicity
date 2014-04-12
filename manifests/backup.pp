@@ -103,7 +103,7 @@ define duplicity::backup (
     icinga::object::nrpe_service { "${::fqdn}_backup_${backup_name}":
       service_description => "backup ${backup_name}",
       command_name        => "check_backup_${backup_name}",
-      command_line        => "/usr/lib/nagios/plugins/check_file_age -f /var/log/backup/.success-${backup_name} -w 36000 -c 39600",
+      command_line        => "/usr/lib/nagios/plugins/check_file_age -f /var/log/backup/.success-${backup_name} -w 39600 -c 54000",
       servicegroups       => "Backup",
       ensure              => $ensure,
     }
