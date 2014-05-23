@@ -11,8 +11,9 @@
 # Sample Usage:
 #
 # [Remember: No empty lines between comments and class definition]
-class duplicity ($ensure = "present", $confdir = false) inherits 
-duplicity::params {
+class duplicity (
+  $ensure  = "present",
+  $confdir = false) inherits duplicity::params {
   $dir_ensure = $ensure ? {
     "present" => "directory",
     default   => "absent",
@@ -35,10 +36,17 @@ duplicity::params {
     source => 'puppet:///modules/duplicity/prepost_runner.sh',
     mode   => '0700',
     owner  => 'root',
-    group  => 'root',
+    group  => 'root';
   }
 
-  package { ["duply", "duplicity", "lftp"]: ensure => $ensure }
+  package { ["duply", "duplicity", "lftp", "ncftp"]: ensure => $ensure }
+
+  # Trusting certificates
+  common::line { 'lftp-trust-certs':
+    file    => '/etc/lftp.conf',
+    line    => 'set ssl:verify-certificate false',
+    require => Package['lftp'],
+  }
 
   file { "/usr/local/sbin/backup-runner.sh":
     ensure  => $ensure,

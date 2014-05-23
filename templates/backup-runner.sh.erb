@@ -10,7 +10,7 @@ ACTION="$@"
 
 [[ -e /etc/duply/${BCKPNAME}/runner.params ]] && . /etc/duply/${BCKPNAME}/runner.params
 
-if [ ! -n "${RUNCONDITION}" ]; then
+if [ -n "${RUNCONDITION}" ]; then
   #Test our run condition
   [[ $($RUNCONDITION) ]] || exit 0
 fi

@@ -34,9 +34,7 @@ define duplicity::backup (
   }
 
   File {
-    ensure  => $ensure,
-    require => File["${cf_r}/${backup_name}"],
-  }
+    ensure => $ensure, }
 
   file {
     "${cf_r}/${backup_name}":
@@ -47,15 +45,34 @@ define duplicity::backup (
       mode    => "0700";
 
     "${cf_r}/${backup_name}/conf":
+      require => File["${cf_r}/${backup_name}"],
       content => template("duplicity/conf.erb");
 
     "${cf_r}/${backup_name}/runner.params":
+      require => File["${cf_r}/${backup_name}"],
       content => template("duplicity/runner_params.erb");
 
     [
       "${cf_r}/${backup_name}/${duplicity::params::pred}",
       "${cf_r}/${backup_name}/${duplicity::params::postd}"]:
-      ensure => $dir_ensure;
+      require => File["${cf_r}/${backup_name}"],
+      ensure  => $dir_ensure;
+
+    "${cf_r}/${backup_name}/pre":
+      ensure  => $ensure,
+      require => File["${cf_r}/${backup_name}"],
+      content => "${duplicity::params::prepost_runner} ${cf_r}/${backup_name}/${duplicity::params::pred}",
+      mode    => '0700',
+      owner   => 'root',
+      group   => 'root';
+
+    "${cf_r}/${backup_name}/post":
+      ensure  => $ensure,
+      require => File["${cf_r}/${backup_name}"],
+      content => "${duplicity::params::prepost_runner} ${cf_r}/${backup_name}/${duplicity::params::postd}",
+      mode    => '0700',
+      owner   => 'root',
+      group   => 'root';
   }
 
   cron { "duply-run-${backup_name}":
@@ -67,7 +84,6 @@ define duplicity::backup (
       false   => 'absent',
       default => $ensure,
     },
-    require => File['/usr/local/sbin/backup-runner.sh'],
   }
 
 #  if defined(Class['ganglia::monitor']) {
@@ -84,10 +100,10 @@ define duplicity::backup (
 
   if defined(Class['icinga::monitored::common']) {
     # # Icinga
-    icinga::nrpe_service { "${fqdn}_backup_${backup_name}":
+    icinga::object::nrpe_service { "${::fqdn}_backup_${backup_name}":
       service_description => "backup ${backup_name}",
       command_name        => "check_backup_${backup_name}",
-      command_line        => "/usr/lib/nagios/plugins/check_file_age -f /var/log/backup/.success-${backup_name} -w 72000 -c 172800",
+      command_line        => "/usr/lib/nagios/plugins/check_file_age -f /var/log/backup/.success-${backup_name} -w 39600 -c 54000",
       servicegroups       => "Backup",
       ensure              => $ensure,
     }
