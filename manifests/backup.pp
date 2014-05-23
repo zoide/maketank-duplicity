@@ -70,17 +70,17 @@ define duplicity::backup (
     require => File['/usr/local/sbin/backup-runner.sh'],
   }
 
-  if defined(Class['ganglia::monitor']) {
-    ganglia::gmetric::cron { "backupstats_${backup_name}.rb":
-      runwhen     => "30",
-      source_name => "backupstats.rb",
-      source      => "duplicity/ganglia",
-      ensure      => $ganglia ? {
-        false   => "absent",
-        default => $ensure,
-      },
-    }
-  }
+#  if defined(Class['ganglia::monitor']) {
+#    ganglia::gmetric::cron { "backupstats_${backup_name}.rb":
+#      runwhen     => "30",
+#      source_name => "backupstats.rb",
+#      source      => "duplicity/ganglia",
+#      ensure      => $ganglia ? {
+#        false   => "absent",
+#        default => $ensure,
+#      },
+#    }
+#  }
 
   if defined(Class['icinga::monitored::common']) {
     # # Icinga
