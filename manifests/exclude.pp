@@ -1,11 +1,7 @@
-define duplicity::exclude (
-  $content,
-  $backup_name = "",
-  $confdir     = false,
-  $ensure      = "present") {
+define duplicity::exclude ($content, $backup_name = '', $confdir = false, $ensure = 'present') {
   require 'duplicity::params'
   $bname_real = $backup_name ? {
-    ""      => $name,
+    ''      => $name,
     default => $backup_name,
   }
   $cf_r = $confdir ? {
@@ -15,8 +11,8 @@ define duplicity::exclude (
 
   file { "duplicity::${bname_real}::exclude":
     path    => "${cf_r}/${bname_real}/exclude",
-    ensure  => "${ensure}",
-    content => "${content}",
-    mode    => 0600,
+    ensure  => $ensure,
+    content => $content,
+    mode    => '0600',
   }
 }

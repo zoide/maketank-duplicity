@@ -20,6 +20,6 @@ define duplicity::pre (
   :
     ensure  => $ensure,
     content => $content,
-    mode    => 0700,
+    mode    => '0700',
   }
 }

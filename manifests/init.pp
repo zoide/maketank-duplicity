@@ -12,11 +12,11 @@
 #
 # [Remember: No empty lines between comments and class definition]
 class duplicity (
-  $ensure  = "present",
+  $ensure  = 'present',
   $confdir = false) inherits duplicity::params {
   $dir_ensure = $ensure ? {
-    "present" => "directory",
-    default   => "absent",
+    'present' => 'directory',
+    default   => 'absent',
   }
   $cf_r = $confdir ? {
     false   => $duplicity::params::confdir,
@@ -27,8 +27,8 @@ class duplicity (
     ensure  => $dir_ensure,
     recurse => true,
     force   => true,
-    mode    => "0700",
-    require => Package["duply"],
+    mode    => '0700',
+    require => Package['duply'],
   }
 
   file { $duplicity::params::prepost_runner:
@@ -39,7 +39,7 @@ class duplicity (
     group  => 'root';
   }
 
-  package { ["duply", "duplicity", "lftp", "ncftp"]: ensure => $ensure }
+  package { ['duply', 'duplicity', 'lftp', 'ncftp']: ensure => $ensure }
 
   # Trusting certificates
   common::line { 'lftp-trust-certs':
@@ -48,15 +48,15 @@ class duplicity (
     require => Package['lftp'],
   }
 
-  file { "/usr/local/sbin/backup-runner.sh":
+  file { '/usr/local/sbin/backup-runner.sh':
     ensure  => $ensure,
-    content => template("duplicity/backup-runner.sh.erb"),
-    mode    => "0700",
+    content => template('duplicity/backup-runner.sh.erb'),
+    mode    => '0700',
   }
 
-  file { "/etc/logrotate.d/duplicity":
+  file { '/etc/logrotate.d/duplicity':
     ensure => $ensure,
-    source => "puppet:///modules/duplicity/duplicity.logrotate",
+    source => 'puppet:///modules/duplicity/duplicity.logrotate',
   }
 
 }

@@ -1,20 +1,20 @@
 define duplicity::backup (
-  $ensure              = "present",
+  $ensure              = 'present',
   $backup_name         = $::fqdn,
-  $source              = "/",
-  $target              = "",
-  $gpg_password        = "",
+  $source              = '/',
+  $target              = '',
+  $gpg_password        = '',
   $gpg_key             = 'disabled',
-  $target_user         = "",
-  $target_password     = "",
-  $gpg_options         = "--compress-algo=bzip2",
-  $max_full_backups    = "1",
-  $max_full_backup_age = "2M",
-  $max_age             = "1M",
-  $temp_dir            = "/tmp",
-  $volsize             = "50",
-  $hour                = "*/10",
-  $minute              = "10",
+  $target_user         = '',
+  $target_password     = '',
+  $gpg_options         = '--compress-algo=bzip2',
+  $max_full_backups    = '1',
+  $max_full_backup_age = '2M',
+  $max_age             = '1M',
+  $temp_dir            = '/tmp',
+  $volsize             = '50',
+  $hour                = '*/10',
+  $minute              = '10',
   $cron                = true,
   $ganglia             = true,
   $runcondition        = false,
@@ -26,12 +26,12 @@ define duplicity::backup (
     default => $confdir
   }
 
-  if !defined(Class["duplicity"]) {
-    class { "duplicity": ensure => $ensure }
+  if !defined(Class['duplicity']) {
+    class { 'duplicity': ensure => $ensure }
   }
   $dir_ensure = $ensure ? {
-    "present" => "directory",
-    default   => "absent",
+    'present' => 'directory',
+    default   => 'absent',
   }
 
   File {
@@ -43,15 +43,15 @@ define duplicity::backup (
       ensure  => $dir_ensure,
       recurse => true,
       force   => true,
-      mode    => "0700";
+      mode    => '0700';
 
     "${cf_r}/${backup_name}/conf":
       require => File["${cf_r}/${backup_name}"],
-      content => template("duplicity/conf.erb");
+      content => template('duplicity/conf.erb');
 
     "${cf_r}/${backup_name}/runner.params":
       require => File["${cf_r}/${backup_name}"],
-      content => template("duplicity/runner_params.erb");
+      content => template('duplicity/runner_params.erb');
 
     [
       "${cf_r}/${backup_name}/${duplicity::params::pred}",
@@ -89,11 +89,11 @@ define duplicity::backup (
 
 #  if defined(Class['ganglia::monitor']) {
 #    ganglia::gmetric::cron { "backupstats_${backup_name}.rb":
-#      runwhen     => "30",
-#      source_name => "backupstats.rb",
-#      source      => "duplicity/ganglia",
+#      runwhen     => '30',
+#      source_name => 'backupstats.rb',
+#      source      => 'duplicity/ganglia',
 #      ensure      => $ganglia ? {
-#        false   => "absent",
+#        false   => 'absent',
 #        default => $ensure,
 #      },
 #    }
@@ -105,7 +105,7 @@ define duplicity::backup (
       service_description => "backup ${backup_name}",
       command_name        => "check_backup_${backup_name}",
       command_line        => "/usr/lib/nagios/plugins/check_file_age -f /var/log/backup/.success-${backup_name} -w 39600 -c 54000",
-      servicegroups       => "Backup",
+      servicegroups       => 'Backup',
       ensure              => $ensure,
     }
   }
