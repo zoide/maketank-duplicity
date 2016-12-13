@@ -76,28 +76,38 @@ define duplicity::backup (
       group   => 'root';
   }
 
-  cron { "duply-run-${backup_name}":
-    command => "/usr/local/sbin/backup-runner.sh ${backup_name} pre_incr_post",
-    user    => 'root',
-    hour    => $hour,
-    minute  => $minute,
-    ensure  => $cron ? {
-      false   => 'absent',
-      default => $ensure,
-    },
+  cron {
+    "duply-run-${backup_name}":
+      command => "/usr/local/sbin/backup-runner.sh ${backup_name} pre_incr_post",
+      user    => 'root',
+      hour    => $hour,
+      minute  => $minute,
+      ensure  => $cron ? {
+        false   => 'absent',
+        default => $ensure,
+      } ;
+
+    "duply-cleanup-${backup_name}":
+      command => "/usr/local/sbin/backup-runner.sh ${backup_name} cleanup_purge --force",
+      user    => 'root',
+      special => 'weekly',
+      ensure  => $cron ? {
+        false   => 'absent',
+        default => $ensure,
+      } ;
   }
 
-#  if defined(Class['ganglia::monitor']) {
-#    ganglia::gmetric::cron { "backupstats_${backup_name}.rb":
-#      runwhen     => '30',
-#      source_name => 'backupstats.rb',
-#      source      => 'duplicity/ganglia',
-#      ensure      => $ganglia ? {
-#        false   => 'absent',
-#        default => $ensure,
-#      },
-#    }
-#  }
+  #  if defined(Class['ganglia::monitor']) {
+  #    ganglia::gmetric::cron { "backupstats_${backup_name}.rb":
+  #      runwhen     => '30',
+  #      source_name => 'backupstats.rb',
+  #      source      => 'duplicity/ganglia',
+  #      ensure      => $ganglia ? {
+  #        false   => 'absent',
+  #        default => $ensure,
+  #      },
+  #    }
+  #  }
 
   if defined(Class['icinga::monitored::common']) {
     # # Icinga
