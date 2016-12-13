@@ -4,7 +4,7 @@
 #  GPG_PW='passphrase' - symmetric encryption using passphrase only
 GPG_PW='<%= scope.lookupvar("gpg_password") %>'
 PASSPHRASE='<%= scope.lookupvar("gpg_password") %>'
-GPG_KEY='disabled'
+GPG_KEY='<%= scope.lookupvar("gpg_key") %>'
 
 # gpg options passed from duplicity to gpg process (default='')
 # e.g. "--trust-model pgp|classic|direct|always" 

@@ -4,6 +4,7 @@ define duplicity::backup (
   $source              = "/",
   $target              = "",
   $gpg_password        = "",
+  $gpg_key             = 'disabled',
   $target_user         = "",
   $target_password     = "",
   $gpg_options         = "--compress-algo=bzip2",
